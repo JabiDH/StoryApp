@@ -1,0 +1,6 @@
+@StoryApp.API_HostAddress = http://localhost:5114
+
+GET {{StoryApp.API_HostAddress}}/stories/new
+Accept: application/json
+
+###
