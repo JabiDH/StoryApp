@@ -1,0 +1,12 @@
+table {
+  width: 100%;
+}
+
+th {
+  font-weight: bold;
+}
+
+.mat-mdc-form-field {
+  font-size: 14px;
+  width: 100%;
+}

@@ -2,6 +2,6 @@ export interface PagedResult<T> {
   stories: T[],
   currentPage: number,
   pageSize: number,
-  totalRecord: number,
+  totalRecords: number,
   totalPages: number
 }

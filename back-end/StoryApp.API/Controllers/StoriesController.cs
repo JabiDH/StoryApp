@@ -29,20 +29,11 @@ namespace StoryApp.API.Controllers
         [HttpGet("new")]
         public async Task<IActionResult> GetNewStories(int pageNumber = 1, int pageSize = 10)
         {
-            try
-            {
-                _logger.LogDebug($"Calling StoriesController.GetNewStories(pageNumber:{pageNumber}, pageSize:{pageSize})");
+            _logger.LogDebug($"Calling StoriesController.GetNewStories(pageNumber:{pageNumber}, pageSize:{pageSize})");
 
-                var pageResult = await _storiesService.GetNewStoriesByPageAsync(pageNumber, pageSize);
+            var pageResult = await _storiesService.GetNewStoriesByPageAsync(pageNumber, pageSize);
 
-                return Ok(pageResult);
-            }
-            catch (Exception ex)
-            {
-                // log ex
-                throw ex;
-            }
-               
+            return Ok(pageResult);
         }
     }
 }
