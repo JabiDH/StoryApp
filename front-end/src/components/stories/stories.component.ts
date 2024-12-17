@@ -40,7 +40,6 @@ export class StoriesComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadData();
-    this.subscription = this.stories$.subscribe(stories => this.storiesDataSource.data = stories);
   }
 
   loadData() {
@@ -51,15 +50,7 @@ export class StoriesComponent implements OnInit, OnDestroy {
       }),
       catchError(this.handleError)
     );
-  }
-
-  reloadData() {
-    this.stories$ = this.getNewStories(this.pageIndex, this.pageSize).pipe(
-      switchMap((res: PagedResult<Story>) => {
-        return [res.stories];
-      }),
-      catchError(this.handleError)
-    );
+    this.subscription = this.stories$.subscribe(stories => this.storiesDataSource.data = stories);
   }
 
   getNewStories(page: number, size: number) : Observable<PagedResult<Story>> {
@@ -70,7 +61,6 @@ export class StoriesComponent implements OnInit, OnDestroy {
     this.pageIndex = event.pageIndex;
     this.pageSize = event.pageSize;
     this.loadData();
-    this.subscription = this.stories$.subscribe(s => this.storiesDataSource.data = s);
   }
 
   applyFilter(event: Event): void {
