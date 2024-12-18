@@ -1,5 +1,4 @@
 export const environment = {
-    production: false,
-    storyAppApiUrl: 'https://localhost:7106/api'
+  production: true,
+  storyAppApiUrl: 'https://story-app-ccan-dev-001-cufmgchpdbhgavaw.canadacentral-01.azurewebsites.net/api'
 }
-
