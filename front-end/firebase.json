@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "source": "dist/ng-story-app/browser",
+    "source": ".",
     "ignore": [
       "firebase.json",
       "**/.*",
