@@ -14,6 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: npm ci && npm run build
+        working-directory: ./front-end
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
@@ -21,3 +22,4 @@ jobs:
           projectId: storyapp-githubactions
         env:
           FIREBASE_CLI_EXPERIMENTS: webframeworks
+        working-directory: ./front-end
