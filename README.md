@@ -1,3 +1,3 @@
 # StoryApp
 
-https://storyapp-165da.web.app/stories
+https://storyapp-githubactions.web.app/stories
