@@ -26,6 +26,7 @@ import { catchError, Observable, of, Subscribable, Subscription, switchMap, thro
   styleUrl: './stories.component.css'
 })
 export class StoriesComponent implements OnInit, OnDestroy {
+  title: string = 'Stories';
   displayedColumns: string[] = ['title', 'url'];
   storiesDataSource = new MatTableDataSource<any>();
   stories$: Observable<Story[]> = of();
