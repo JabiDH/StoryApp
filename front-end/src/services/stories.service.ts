@@ -11,16 +11,29 @@ import { storyApiUrls } from "../assets/configs/config"
 export class StoriesService {
   constructor(private httpClient: HttpClient) { }
 
-  getNewStories(pageNumber: number, pageSize: number) : Observable<PagedResult<Story>> {
+  getNewStories(pageNumber: number, pageSize: number): Observable<PagedResult<Story>> {
     let params = new HttpParams()
       .set("pageNumber", pageNumber)
       .set("pageSize", pageSize);
 
-    return this.httpClient.get<PagedResult<Story>>(storyApiUrls.newStories, { params: params })
-    .pipe(
-      tap(console.log),
-      map(res => res),
-      catchError(throwError)
-    );
+    return this.httpClient.get<PagedResult<Story>>(storyApiUrls.getNewStories, { params: params })
+      .pipe(
+        tap(console.log),
+        map(res => res),
+        catchError(throwError)
+      );
+  }
+
+  searchNewStories(pageNumber: number, pageSize: number, searchValue: string): Observable<PagedResult<Story>> {
+    let params = new HttpParams()
+      .set("pageNumber", pageNumber)
+      .set("pageSize", pageSize)
+      .set("searchValue", searchValue);
+
+    return this.httpClient.get<PagedResult<Story>>(storyApiUrls.searchNewStories, { params: params })
+      .pipe(
+        tap(console.log),
+        catchError(throwError)
+      );
   }
 }

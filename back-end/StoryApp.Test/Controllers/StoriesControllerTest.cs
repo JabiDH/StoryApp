@@ -113,5 +113,42 @@ namespace StoryApp.Test.Controllers
             Assert.AreEqual(HttpStatusCode.OK, (HttpStatusCode)okObjectResult.StatusCode);
             Assert.IsNull(okObjectResult.Value);
         }
+
+        [TestMethod]
+        public async Task SearchStories_ShouldReturnOk_WithValidData()
+        {
+            // Arrange
+            var story1 = new StoryModel { Title = "How to master coding", Url = "http://story.com/1" };
+            var story2 = new StoryModel { Title = "Coding for beginners", Url = "http://story.com/2" };
+            var search = "coding";
+            var expectedPageResult = new PagedResult<StoryModel>
+            {
+                Stories = new List<StoryModel>() { story1, story2 },
+                TotalRecords = 2,
+                CurrentPage = 1,
+                PageSize = 10
+            };
+
+            _mockStoriesService.Setup(s => s.SearchNewStoriesByPageAsync(1, 10, search))
+                .Returns(Task.FromResult(expectedPageResult));
+
+            // Act
+            var response = await _storiesController.SearchNewStories(search, 1, 10);
+
+            // Assert
+            Assert.IsNotNull(response);
+            var okObjectResult = response as OkObjectResult;
+            Assert.IsNotNull(okObjectResult);
+            Assert.IsNotNull(okObjectResult.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, (HttpStatusCode)okObjectResult.StatusCode);
+
+            var actualPageResult = okObjectResult.Value as PagedResult<StoryModel>;
+            Assert.IsNotNull(actualPageResult);
+            Assert.AreEqual(expectedPageResult.Stories.Count, actualPageResult.Stories.Count);
+            Assert.AreEqual(expectedPageResult.TotalRecords, actualPageResult.TotalRecords);
+            Assert.AreEqual(expectedPageResult.CurrentPage, actualPageResult.CurrentPage);
+            Assert.AreEqual(expectedPageResult.PageSize, actualPageResult.PageSize);
+            Assert.AreEqual(expectedPageResult.TotalPages, actualPageResult.TotalPages);
+        }
     }
 }

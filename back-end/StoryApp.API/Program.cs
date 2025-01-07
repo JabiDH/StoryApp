@@ -25,6 +25,8 @@ builder.Services.AddHttpClient();
 
 builder.Services.AddMemoryCache();
 
+builder.Services.AddScoped<ICacheBackService, CacheBackService>();
+
 builder.Services.AddScoped<IStoriesService, StoriesService>();
 
 builder.Services.AddCors(options =>

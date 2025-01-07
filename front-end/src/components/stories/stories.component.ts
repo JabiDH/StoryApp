@@ -8,7 +8,8 @@ import { pagingConfigs } from '../../assets/configs/config';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { AsyncPipe, CommonModule, JsonPipe } from '@angular/common';
-import { catchError, Observable, of, Subscribable, Subscription, switchMap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, Observable, of, Subscribable, Subscription, switchMap, throwError } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-stories',
@@ -20,53 +21,64 @@ import { catchError, Observable, of, Subscribable, Subscription, switchMap, thro
     MatFormFieldModule,
     MatInputModule,
     JsonPipe,
-    AsyncPipe
+    AsyncPipe,
+    FormsModule
   ],
   templateUrl: './stories.component.html',
   styleUrl: './stories.component.css'
 })
-export class StoriesComponent implements OnInit, OnDestroy {
+export class StoriesComponent implements OnInit {
   title: string = 'Stories';
   displayedColumns: string[] = ['title', 'url'];
-  storiesDataSource = new MatTableDataSource<any>();
-  stories$: Observable<Story[]> = of();
-  subscription!: Subscription;
+  searchValue: string = '';
 
   pageIndex: number = 0;
   pageSize: number = pagingConfigs.pageSize;
-  pageSizeOptions:number[] = pagingConfigs.pageSizeOptions;
+  pageSizeOptions: number[] = pagingConfigs.pageSizeOptions;
   totalRecords: number = 0;
 
-  constructor(private storiesService: StoriesService) {}
+  storiesSub = new BehaviorSubject({ pageIndex: this.pageIndex, pageSize: this.pageSize });
+  stories$!: Observable<any>;
+
+  constructor(private storiesService: StoriesService) { }
 
   ngOnInit(): void {
     this.loadData();
   }
 
   loadData() {
-    this.stories$ = this.getNewStories(this.pageIndex, this.pageSize).pipe(
-      switchMap((res: PagedResult<Story>) => {
-        this.totalRecords = res.totalRecords;
-        return [res.stories];
-      }),
-      catchError(this.handleError)
+    this.stories$ = this.storiesSub.pipe(
+      switchMap((pageData) => {
+        const getStories = this.searchValue ? this.searchNewStories(pageData.pageIndex, pageData.pageSize, this.searchValue) :
+          this.getNewStories(this.pageIndex, this.pageSize);
+
+        return getStories.pipe(
+          switchMap((res: PagedResult<Story>) => {
+            this.totalRecords = res.totalRecords;
+            return [res.stories];
+          })
+        );
+      })
     );
-    this.subscription = this.stories$.subscribe(stories => this.storiesDataSource.data = stories);
   }
 
-  getNewStories(page: number, size: number) : Observable<PagedResult<Story>> {
+  searchData() {
+    this.pageIndex = 0;
+    this.loadData();
+  }
+
+  getNewStories(page: number, size: number): Observable<PagedResult<Story>> {
     return this.storiesService.getNewStories(page + 1, size);
+  }
+
+  searchNewStories(page: number, size: number, search: string): Observable<PagedResult<Story>> {
+    return this.storiesService.searchNewStories(page + 1, size, search);
   }
 
   onPageChange(event: PageEvent): void {
     this.pageIndex = event.pageIndex;
     this.pageSize = event.pageSize;
-    this.loadData();
-  }
-
-  applyFilter(event: Event): void {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.storiesDataSource.filter = filterValue.trim().toLowerCase();
+    this.storiesSub.next({pageIndex: this.pageIndex, pageSize: this.pageSize});
   }
 
   handleError(error: any): Observable<Story[]> {
@@ -74,9 +86,5 @@ export class StoriesComponent implements OnInit, OnDestroy {
     console.log(errorMsg)
     console.error(error);
     return of([]);
-  }
-
-  ngOnDestroy(): void {
-    this.subscription?.unsubscribe();
   }
 }

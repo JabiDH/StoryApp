@@ -1,7 +1,8 @@
 import { environment } from "../../environments/environment";
 
 export const storyApiUrls = {
-  newStories: `${environment.storyAppApiUrl}/stories/new`
+  getNewStories: `${environment.storyAppApiUrl}/stories/new`,
+  searchNewStories: `${environment.storyAppApiUrl}/stories/new/search`
 }
 
 export const pagingConfigs = {

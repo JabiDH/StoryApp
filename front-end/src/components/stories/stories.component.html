@@ -6,15 +6,15 @@
 <div class="container" style="padding-top: 1rem;">
   <div class="row">
     <mat-form-field>
-      <mat-label>Filter</mat-label>
-      <input matInput (keyup)="applyFilter($event)" #input>
+      <mat-label>Search</mat-label>
+      <input matInput (keyup)="searchData()" [(ngModel)]="searchValue">
     </mat-form-field>
   </div>
 </div>
 
 <div class="container d-flex flex-column" style="height: 75vh;">
   <div class="row flex-grow-1 overflow-auto">
-    <table mat-table [dataSource]="storiesDataSource" class="mat-elevation-z8 w-100">
+    <table mat-table [dataSource]="stories$ | async" class="mat-elevation-z8 w-100">
 
       <!-- Title Column -->
       <ng-container matColumnDef="title">

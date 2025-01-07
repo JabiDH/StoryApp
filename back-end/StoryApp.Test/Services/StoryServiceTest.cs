@@ -17,15 +17,18 @@ namespace StoryApp.Test.Services
 
         private MockHttpMessageHandler _httpHandlerMock;
         private IMemoryCache _memoryCache;
-        private Mock<ILogger<StoriesService>> _loggerMock;
+        private Mock<ILogger<CacheBackService>> _cacheBackServiceLoggerMock;
+        private Mock<ILogger<StoriesService>> _storiesServiceLoggerMock;
         private IConfiguration _configuration;
-        private StoriesService _storyService;
+        private IStoriesService _storiesService;
+        private ICacheBackService _cacheBackService;
 
         [TestInitialize]
         public void SetUp()
         {
             _httpHandlerMock = new MockHttpMessageHandler();
-            _loggerMock = new Mock<ILogger<StoriesService>>();
+            _storiesServiceLoggerMock = new Mock<ILogger<StoriesService>>();
+            _cacheBackServiceLoggerMock = new Mock<ILogger<CacheBackService>>();
 
             var cacheOptions = new MemoryCacheOptions();
             _memoryCache = new MemoryCache(cacheOptions);
@@ -41,7 +44,8 @@ namespace StoryApp.Test.Services
                 .Build();
 
             var httpClient = new HttpClient(_httpHandlerMock);
-            _storyService = new StoriesService(httpClient, _memoryCache, _loggerMock.Object, _configuration);
+            _cacheBackService = new CacheBackService(httpClient, _memoryCache, _cacheBackServiceLoggerMock.Object);
+            _storiesService = new StoriesService(_cacheBackService, _storiesServiceLoggerMock.Object, _configuration);
         }
 
         [TestMethod]
@@ -54,7 +58,7 @@ namespace StoryApp.Test.Services
             SetupStoriesResponses(storyIds);
 
             // Act
-            var result = await _storyService.GetNewStoriesByPageAsync(1, 3);
+            var result = await _storiesService.GetNewStoriesByPageAsync(1, 3);
 
             // Assert
             Assert.IsNotNull(result);
@@ -71,7 +75,7 @@ namespace StoryApp.Test.Services
             _httpHandlerMock.SetupResponse(NEW_STORIES_API, new List<int>());
 
             // Act
-            var result = await _storyService.GetNewStoriesByPageAsync(1, 3);
+            var result = await _storiesService.GetNewStoriesByPageAsync(1, 3);
 
             // Assert
             Assert.IsNotNull(result);
@@ -89,7 +93,7 @@ namespace StoryApp.Test.Services
             SetupStoriesResponses(storyIds);
 
             // Act
-            var result = await _storyService.GetNewStoriesByPageAsync(2, 3);
+            var result = await _storiesService.GetNewStoriesByPageAsync(2, 3);
 
             // Assert
             Assert.IsNotNull(result);
@@ -109,7 +113,7 @@ namespace StoryApp.Test.Services
             SetupStoriesResponses(storyIds);
 
             // Act
-            var result = await _storyService.GetNewStoriesByPageAsync(1, 3);
+            var result = await _storiesService.GetNewStoriesByPageAsync(1, 3);
             List<int> cachedStoryIds;
             var isCached = _memoryCache.TryGetValue(CacheKeys.NEW_STORY_IDS_CACHE_KEY, out cachedStoryIds);
             List<StoryModel> cachedStories = new List<StoryModel>();

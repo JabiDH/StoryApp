@@ -48,7 +48,7 @@ describe('StoriesService', () => {
     });
 
     const req = httpTestingController.expectOne(
-      `${storyApiUrls.newStories}?pageNumber=${pageNumber}&pageSize=${pageSize}`
+      `${storyApiUrls.getNewStories}?pageNumber=${pageNumber}&pageSize=${pageSize}`
     );
 
     expect(req.request.method).toBe('GET');
@@ -68,7 +68,7 @@ describe('StoriesService', () => {
     });
 
     const req = httpTestingController.expectOne(
-      `${storyApiUrls.newStories}?pageNumber=${pageNumber}&pageSize=${pageSize}`
+      `${storyApiUrls.getNewStories}?pageNumber=${pageNumber}&pageSize=${pageSize}`
     );
 
     expect(req.request.method).toBe('GET');
@@ -82,7 +82,7 @@ describe('StoriesService', () => {
     service.getNewStories(pageNumber, pageSize).subscribe();
 
     const req = httpTestingController.expectOne(
-      (req) => req.url === storyApiUrls.newStories
+      (req) => req.url === storyApiUrls.getNewStories
     );
 
     expect(req.request.method).toBe('GET');
