@@ -1,12 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { StoriesComponent } from './stories.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Story } from '../../models/story.model';
 import { of, throwError } from 'rxjs';
 import { StoriesService } from '../../services/stories.service';
 import { PagedResult } from '../../models/paged-result.model';
 import { PageEvent } from '@angular/material/paginator';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('StoriesComponent', () => {
   let component: StoriesComponent;
@@ -18,15 +19,14 @@ describe('StoriesComponent', () => {
     storiesServiceSpy.getNewStories.and.returnValue(of({ stories: [ { id: 1, title: 'Story 1', url: 'http://story.com/1' } ], totalRecords: 1, currentPage: 1, pageSize: 1, totalPages: 1 } as PagedResult<Story>));
 
     await TestBed.configureTestingModule({
-      imports: [
-        StoriesComponent,
-        HttpClientTestingModule
-      ],
-      providers: [
+    imports: [StoriesComponent],
+    providers: [
         provideNoopAnimations(),
-        { provide: StoriesService, useValue: storiesServiceSpy }
-      ]
-    })
+        { provide: StoriesService, useValue: storiesServiceSpy },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     .compileComponents();
 
     storiesService = TestBed.inject(StoriesService) as jasmine.SpyObj<StoriesService>;

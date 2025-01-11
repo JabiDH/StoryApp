@@ -1,9 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { StoriesService } from './stories.service';
 import { PagedResult } from '../models/paged-result.model';
 import { Story } from '../models/story.model';
 import { storyApiUrls } from '../assets/configs/config';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('StoriesService', () => {
   let service: StoriesService;
@@ -22,9 +23,9 @@ describe('StoriesService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [StoriesService]
-    });
+    imports: [],
+    providers: [StoriesService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+});
     service = TestBed.inject(StoriesService);
     httpTestingController = TestBed.inject(HttpTestingController);
   });
