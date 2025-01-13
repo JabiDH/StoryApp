@@ -5,7 +5,7 @@ on:
     - master
 env:
   AZURE_WEBAPP_NAME: story-app-default-rg-dev-001-github
-  AZURE_WEBAPP_PACKAGE_PATH: StoryApp.API\publish
+  AZURE_WEBAPP_PACKAGE_PATH: backend\StoryApp.API\publish
   AZURE_APIM_RESOURCE_PATH: /echo
   AZURE_APIM_RESOURCEGROUP: DefaultResourceGroup-CCAN
   AZURE_APIM_SERVICENAME: storyapp-api-ccan-dev-001
@@ -13,12 +13,12 @@ env:
   AZURE_APIM_APPSERVICEURL: https://story-app-default-rg-dev-001-github-g3e4fncrafhyg7g7.canadacentral-01.azurewebsites.net
   SWASHBUCLE_ASPNET_CORE_CLI_PACKAGE_VERSION: 5.6.3
   SWASHBUCKLE_DOTNET_CORE_VERSION: 3.1.x
-  API_IMPORT_SPECIFICATION_PATH: StoryApp.API\publish\swagger.json
-  API_IMPORT_DLL: StoryApp.API\bin\Release\net8.0\StoryApp.API.dll
+  API_IMPORT_SPECIFICATION_PATH: backend\StoryApp.API\publish\swagger.json
+  API_IMPORT_DLL: backend\StoryApp.API\bin\Release\net8.0\StoryApp.API.dll
   API_IMPORT_VERSION: v1
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 8.0.x
-  WORKING_DIRECTORY: StoryApp.API
+  WORKING_DIRECTORY: backend\StoryApp.API
 jobs:
   build:
     runs-on: windows-latest
